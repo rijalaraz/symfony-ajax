@@ -24,7 +24,8 @@ class VideoController extends AbstractController
         }
 
         return $this->render('video/index.html.twig', [
-            'videoform' => $videoForm->createView()
+            'videoform' => $videoForm->createView(),
+            'videos' => $videoRepository->findAll()
         ]);
     }
 }

@@ -46,8 +46,40 @@ $(document).ready(function(){
             error:function(err){
                 console.error(err);
             },
-            success:function(data){
-                console.log(data);
+            success:function(response){
+                // Pour effacer les doublons de messages d'erreur
+                $('.invalid-feedback').each(function(index, el) {
+                    $(el).remove();
+                });
+                $('.is-invalid').each(function(index, el) {
+                    $(el).removeClass('is-invalid');
+                });
+
+                // Pour afficher les messages d'erreur
+                switch (response.code) {
+                    case 'VIDEO_ADDED_SUCCESSFULLY':
+                        $('#videos_list').append(response.html);
+                        break;
+
+                    case 'VIDEO_INVALID_FORM':
+                        for (const key in response.errors) {
+                            if (Object.prototype.hasOwnProperty.call(response.errors, key)) {
+                                const errorMessage = response.errors[key];
+
+                                $(`#video_${key}`).addClass('is-invalid');
+
+                                let newDiv = $('<div>');
+                                newDiv.addClass('invalid-feedback d-block');
+                                newDiv.text(errorMessage);
+
+                                $(`#video_${key}`).after(newDiv);
+                            }
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
             },
             complete:function(){
                 console.log("Request finished.");

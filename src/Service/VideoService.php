@@ -4,17 +4,18 @@ namespace App\Service;
 
 use Symfony\Component\Form\FormInterface;
 use App\Entity\Video;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Twig\Environment;
 
 class VideoService
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private ParameterBagInterface $parameters
+        private ParameterBagInterface $parameters,
+        private Environment $environment,
     ) {}
 
     public function handleVideoForm(FormInterface $videoForm): JsonResponse
@@ -49,14 +50,17 @@ class VideoService
 
         return new JsonResponse([
             'code' => Video::VIDEO_ADDED_SUCCESSFULLY,
-            'html' => ''
+            'html' => $this->environment->render('video/video.html.twig', [
+                'video' => $video
+            ])
         ]);
     }
 
     public function handleInvalidForm(FormInterface $videoForm): JsonResponse
     {
         return new JsonResponse([
-            'code' => Video::VIDEO_INVALID_FORM
+            'code' => Video::VIDEO_INVALID_FORM,
+            'errors' => $this->getErrorsMessages($videoForm)
         ]);
     }
 
@@ -66,5 +70,19 @@ class VideoService
         $uploadedFile->move($directory, $newFileName);
 
         return $newFileName;
+    }
+
+    private function getErrorsMessages(FormInterface $form): array
+    {
+        $errors = [];
+
+        foreach ($form->all() as $child) {
+            foreach ($child->getErrors() as $error) {
+                $name = $child->getName();
+                $errors[$name] = $error->getMessage();
+            }
+        }
+
+        return $errors;
     }
 }
