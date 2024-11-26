@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vidéos{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5" style="max-width: 800px">
+        <div class="row">
+            <div class="card p-3">
+                <div class="col">
+                    <form name="video" method="post" enctype="multipart/form-data">
+                        <div id="video">
+                            <div class="mb-3">
+                                <label for="title" class="form-label required">Titre (obligatoire)</label>
+                                <input type="text" id="title" name="title" required="required" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" name="description" class="form-control"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="thumbnail" class="form-label">Miniature</label>
+                                <input type="file" id="thumbnail" name="thumbnail" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoFile" class="form-label required">Vidéo</label>
+                                <input type="file" id="videoFile" name="videoFile" required="required" class="form-control">
+                            </div>
+                            <fieldset class="mb-3">
+                                <legend class="col-form-label required">Visibilité</legend>
+                                <div id="visibility">
+                                    <div class="form-check"><input type="radio" id="visibility_1" name="visibility" required="required" class="form-check-input" value="1" checked="checked">
+                                    <label class="form-check-label required" for="visibility_1">Publique</label>
+                                    </div>
+                                    <div class="form-check"><input type="radio" id="visibility_2" name="visibility" required="required" class="form-check-input" value="2">
+                                    <label class="form-check-label required" for="visibility_2">Privée</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="mb-3">
+                                <button type="submit" id="Enregistrer" name="Enregistrer" class="btn btn-primary btn">Enregistrer</button>
+                            </div>
+                            <input type="hidden" id="token" name="_token" value="19c8abf3c613fd74b87.MtzY6r7o-MmTXtUT0fA3-USB4Bo8AMsxlBWBC2GHJIg.c6-ws9i3wIHUC-JrjqlRiQHvill7NIwHpnfiRAnxd-pqquqHjYrLk8kMog">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

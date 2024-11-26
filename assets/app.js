@@ -1,4 +1,3 @@
-import './bootstrap.js';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -6,5 +5,55 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css';
+import $ from 'jquery';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+/*
+const formVideo = document.querySelector('form');
+
+formVideo.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    fetch(this.action, {
+        body: new FormData(e.target),
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(json => {
+        console.log(json);
+    });
+})
+*/
+
+
+
+$(document).ready(function(){
+
+
+    $('form[name="video"]').on('submit',function(e){
+
+        e.preventDefault();
+
+        const data = new FormData(e.target);
+
+        $.ajax({
+            url:"/",
+            data: data,
+            type:"POST",
+            contentType:false,
+            processData:false,
+            cache:false,
+            dataType:"json", // Change this according to your response from the server.
+            error:function(err){
+                console.error(err);
+            },
+            success:function(data){
+                console.log(data);
+            },
+            complete:function(){
+                console.log("Request finished.");
+            }
+        });
+
+    });
+
+});
