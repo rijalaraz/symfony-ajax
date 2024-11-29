@@ -8,17 +8,18 @@ services:
         ports:
             - '16001:8025'
 
-    postgres:
-        image: 'postgres:15-alpine'
+    mysql:
+        image: 'mysql:8.0'
         working_dir: /home/rija/formajax
         volumes:
             - '.:/home/rija/formajax'
         environment:
-            - POSTGRES_USER=rija
-            - POSTGRES_PASSWORD=secret
-            - POSTGRES_DB=formajax
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=formajax
+            - MYSQL_USER=rija
+            - MYSQL_PASSWORD=secret
         ports:
-            - '16004:5432'
+            - '27002:3306'
 
     webserver:
         image: 'nginx:alpine'
@@ -42,4 +43,4 @@ services:
         ports:
             - '8023:8080'
         links:
-            - postgres
+            - mysql

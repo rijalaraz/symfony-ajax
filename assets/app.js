@@ -7,25 +7,6 @@
 import './styles/app.css';
 import $ from 'jquery';
 
-/*
-const formVideo = document.querySelector('form');
-
-formVideo.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    fetch(this.action, {
-        body: new FormData(e.target),
-        method: 'POST'
-    })
-    .then(response => response.json())
-    .then(json => {
-        console.log(json);
-    });
-})
-*/
-
-
-
 $(document).ready(function(){
 
 

@@ -4,7 +4,7 @@ WORKDIR "/home/rija/formajax"
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
         php8.3-gd \
-        php8.3-pgsql \
+        php8.3-mysql \
         php8.3-xdebug \
         php8.3-yaml \
     && apt-get clean \
