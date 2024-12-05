@@ -1,1 +1,1 @@
-docker exec -ti formajax_php-fpm_1 /bin/bash
+docker exec -ti formajax-php-fpm-1 /bin/bash
