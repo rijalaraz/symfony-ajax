@@ -1,1 +1,1 @@
-docker exec -ti formajax-mysql-1 /bin/bash
+docker exec -ti symfony-mysql /bin/bash

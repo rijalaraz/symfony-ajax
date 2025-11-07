@@ -1,18 +1,39 @@
 ###############################################################################
 #                          Generated on phpdocker.io                          #
 ###############################################################################
-version: '3.1'
+
 services:
-    mailhog:
-        image: 'mailhog/mailhog:latest'
+    nginx:
+        image: 'nginx:alpine'
+        container_name: nginx
+        working_dir: /home/rija/www/formajax
+        volumes:
+            - '.:/home/rija/www/formajax'
+            - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
         ports:
-            - '16001:8025'
+            - '16000:80'
+        networks:
+            - app-network
+
+    php-fpm:
+        build: phpdocker/php-fpm
+        working_dir: /home/rija/www/formajax
+        container_name: symfony-php
+        volumes:
+            - '.:/home/rija/www/formajax'
+            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/fpm/conf.d/99-overrides.ini'
+            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/cli/conf.d/99-overrides.ini'
+        depends_on:
+            - mysql
+        networks:
+            - app-network
 
     mysql:
-        image: 'mysql:8.0'
-        working_dir: /home/rija/formajax
+        image: mysql:8.0
+        working_dir: /home/rija/www/formajax
         volumes:
-            - '.:/home/rija/formajax'
+            - '.:/home/rija/www/formajax'
+        container_name: symfony-mysql
         environment:
             - MYSQL_ROOT_PASSWORD=root
             - MYSQL_DATABASE=formajax
@@ -20,27 +41,27 @@ services:
             - MYSQL_PASSWORD=secret
         ports:
             - '27002:3306'
-
-    webserver:
-        image: 'nginx:alpine'
-        working_dir: /home/rija/formajax
-        volumes:
-            - '.:/home/rija/formajax'
-            - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
-        ports:
-            - '16000:80'
-
-    php-fpm:
-        build: phpdocker/php-fpm
-        working_dir: /home/rija/formajax
-        volumes:
-            - '.:/home/rija/formajax'
-            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/fpm/conf.d/99-overrides.ini'
-            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/cli/conf.d/99-overrides.ini'
+        networks:
+            - app-network
 
     adminer:
         image: adminer:latest
+        container_name: adminer
         ports:
             - '8023:8080'
         links:
             - mysql
+        networks:
+            - app-network
+
+    mailhog:
+        image: 'mailhog/mailhog:latest'
+        container_name: mailhog
+        ports:
+            - '16001:8025'
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge
