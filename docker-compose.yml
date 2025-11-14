@@ -13,7 +13,7 @@ services:
         ports:
             - '16000:80'
         networks:
-            - app-network
+            - mynetwork
 
     php-fpm:
         build: phpdocker/php-fpm
@@ -21,12 +21,16 @@ services:
         container_name: symfony-php
         volumes:
             - '.:/home/rija/www/formajax'
+            - /dev/shm:/dev/shm
             - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/fpm/conf.d/99-overrides.ini'
             - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/cli/conf.d/99-overrides.ini'
-        depends_on:
-            - mysql
+        environment:
+            - APP_ENV=test
+            - PANTHER_NO_SANDBOX=1
+            - PANTHER_CHROME_ARGUMENTS='--no-sandbox --disable-dev-shm-usage --headless --disable-gpu'
+            - PANTHER_CHROMEDRIVER_BINARY=/usr/local/bin/chromedriver
         networks:
-            - app-network
+            - mynetwork
 
     mysql:
         image: mysql:8.0
@@ -42,7 +46,7 @@ services:
         ports:
             - '27002:3306'
         networks:
-            - app-network
+            - mynetwork
 
     adminer:
         image: adminer:latest
@@ -52,7 +56,7 @@ services:
         links:
             - mysql
         networks:
-            - app-network
+            - mynetwork
 
     mailhog:
         image: 'mailhog/mailhog:latest'
@@ -60,8 +64,8 @@ services:
         ports:
             - '16001:8025'
         networks:
-            - app-network
+            - mynetwork
 
 networks:
-    app-network:
+    mynetwork:
         driver: bridge

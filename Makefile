@@ -6,7 +6,7 @@ d-build:
 	docker compose build --no-cache $(PHP)
 
 d-up:
-	docker compose up -d
+	docker-compose up -d
 
 d-start:
 	docker-compose start
@@ -38,7 +38,7 @@ run-inside:
 	docker exec -it $(SERVER) bash
 
 phpunit:
-	docker exec -it $(SERVER) bash -c "PANTHER_NO_HEADLESS=1 php bin/phpunit --testdox"
+	docker exec -it $(SERVER) bash -c "php bin/phpunit --testdox"
 
 composer-diagnose:
 	docker exec -it --user=1000 $(SERVER) bash -c "composer diagnose"

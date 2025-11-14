@@ -56,7 +56,7 @@ RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\d+' | head -1) && \
     rm -rf /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
 
 
-# Étape 4 : Configurer les variables Panther
-ENV PANTHER_CHROMEDRIVER_BINARY=/usr/local/bin/chromedriver
-ENV PANTHER_NO_SANDBOX=1
-ENV PANTHER_CHROME_ARGUMENTS="--headless --no-sandbox --disable-dev-shm-usage --disable-gpu"
+# Configurer les variables Panther
+# ENV PANTHER_CHROMEDRIVER_BINARY=/usr/local/bin/chromedriver
+# ENV PANTHER_NO_SANDBOX=1
+# ENV PANTHER_CHROME_ARGUMENTS="--headless --no-sandbox --disable-dev-shm-usage --disable-gpu"
