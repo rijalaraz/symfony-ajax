@@ -10,7 +10,6 @@ class VideoPantherTest extends PantherTestCase
     public function testVideoPantherForm(): void
     {
         // Lance Chrome (Panther WebDriver)
-        // Create a Chrome WebDriver client
         $client = static::createPantherClient([
             'browser' => static::CHROME,
         ]);
@@ -24,11 +23,12 @@ class VideoPantherTest extends PantherTestCase
         $this->assertPageTitleSame('Vidéos');
 
         // Sélectionne le formulaire
-        $form = $crawler->selectButton('Enregistrer')->form([
-            'video[title]' => 'Test Video',
-            'video[description]' => 'Description du vidéo',
-            'video[visibility]' => '1',
-        ]);
+        $form = $crawler->selectButton('Enregistrer')->form();
+
+        // Remplit les champs texte
+        $form['video[title]'] = 'Test Video';
+        $form['video[description]'] = 'Description du vidéo';
+        $form['video[visibility]'] = '1';
 
         $thumbnailPath = __DIR__.'/files/fanadiovana.jpg';
         $videoPath     = __DIR__.'/files/rija.mp4';
@@ -36,8 +36,7 @@ class VideoPantherTest extends PantherTestCase
         $this->assertFileExists($thumbnailPath);
         $this->assertFileExists($videoPath);
 
-        // Attache les fichiers à uploader (dans le conteneur Docker)
-        // Important : les chemins doivent exister DANS le conteneur php-fpm
+        // Upload des fichiers (Important : les chemins doivent exister DANS le conteneur php-fpm)
         /** @var FileFormField $form['video[thumbnail]']  */
         $form['video[thumbnail]']->upload($thumbnailPath);
         /** @var FileFormField $form['video[videoFile]']  */

@@ -38,7 +38,7 @@ run-inside:
 	docker exec -it $(SERVER) bash
 
 phpunit:
-	docker exec -it $(SERVER) bash -c "php bin/phpunit --testdox --filter=VideoPantherTest"
+	docker exec -it $(SERVER) bash -c "php bin/phpunit --testdox --filter=VideoWebTest"
 
 composer-diagnose:
 	docker exec -it --user=1000 $(SERVER) bash -c "composer diagnose"

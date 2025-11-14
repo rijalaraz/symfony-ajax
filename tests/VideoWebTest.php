@@ -17,9 +17,15 @@ class VideoWebTest extends WebTestCase
         // Vérifie le titre de la page
         $this->assertPageTitleSame('Vidéos');
 
+        $thumbnailPath = __DIR__.'/files/fanadiovana.jpg';
+        $videoPath     = __DIR__.'/files/rija.mp4';
+
+        $this->assertFileExists($thumbnailPath);
+        $this->assertFileExists($videoPath);
+
         // Crée des fichiers uploadés (doivent exister dans le conteneur)
-        $thumbnail = new UploadedFile('/home/fanadiovana.jpg', 'fanadiovana.jpg', 'image/jpeg', null, true);
-        $videoFile = new UploadedFile('/home/rija.mp4', 'rija.mp4', 'video/mp4', null, true);
+        $thumbnail = new UploadedFile($thumbnailPath, 'fanadiovana.jpg', 'image/jpeg', null, true);
+        $videoFile = new UploadedFile($videoPath, 'rija.mp4', 'video/mp4', null, true);
 
         // Send AJAX request
         $client->xmlHttpRequest('POST', '/', [
