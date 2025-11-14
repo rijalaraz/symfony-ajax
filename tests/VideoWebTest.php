@@ -41,7 +41,21 @@ class VideoWebTest extends WebTestCase
             ]
         ]);
 
+        // Vérifie que la requête AJAX a réussi
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(200);
+
+        // Récupère les fichiers reçus par Symfony
+        $receivedFiles = $client->getRequest()->files->all();
+
+        // Vérifie que Symfony les a bien reçus
+        $this->assertArrayHasKey('video', $receivedFiles);
+        $this->assertInstanceOf(UploadedFile::class, $receivedFiles['video']['thumbnail']);
+        $this->assertInstanceOf(UploadedFile::class, $receivedFiles['video']['videoFile']);
+
+        // Vérifie le bon type MIME
+        $this->assertSame('image/jpeg', $receivedFiles['video']['thumbnail']->getClientMimeType());
+        $this->assertSame('video/mp4',  $receivedFiles['video']['videoFile']->getClientMimeType());
+
     }
 }
