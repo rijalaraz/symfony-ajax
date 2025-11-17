@@ -12,6 +12,12 @@ class VideoPantherTest extends PantherTestCase
         // Lance Chrome (Panther WebDriver)
         $client = static::createPantherClient([
             'browser' => static::CHROME,
+            'browser_arguments' => [
+                '--headless', // Run in headless mode ou mode sans interface
+                '--no-sandbox', // Required if running as root in Docker, nécessaire si tu exécutes en root (Docker)
+                '--disable-dev-shm-usage', // corrige les problèmes de mémoire partagée
+                '--disable-gpu',
+            ]
         ]);
 
         // Ouvre la page d’accueil (pas de paramètres serveur ici)
