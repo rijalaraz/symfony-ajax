@@ -26,9 +26,6 @@ services:
             - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.3/cli/conf.d/99-overrides.ini'
         environment:
             - APP_ENV=test
-            - PANTHER_NO_SANDBOX=1
-            - PANTHER_CHROME_ARGUMENTS='--no-sandbox --disable-dev-shm-usage --headless --disable-gpu'
-            - PANTHER_CHROMEDRIVER_BINARY=/usr/local/bin/chromedriver
         networks:
             - mynetwork
 

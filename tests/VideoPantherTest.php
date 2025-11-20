@@ -28,8 +28,9 @@ class VideoPantherTest extends PantherTestCase
         // Vérifie le titre de la page
         $this->assertPageTitleSame('Vidéos');
 
-        // Sélectionne le formulaire
-        $form = $crawler->selectButton('Enregistrer')->form();
+        // Sélectionne le formulaire SANS cliquer de bouton
+        $form = $crawler->filter('form[name="video"]')->form();
+        // $form = $crawler->selectButton('Enregistrer')->form();
 
         // Remplit les champs texte
         $form['video[title]'] = 'Test Video';
