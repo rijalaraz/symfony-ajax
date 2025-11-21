@@ -75,22 +75,4 @@ class VideoWebTest extends WebTestCase
 
     }
 
-    private function waitFor(callable $fn, int $timeoutMs = 3000, int $intervalMs = 100): void
-    {
-        $start = microtime(true);
-
-        while (true) {
-            if ($fn()) {
-                return; // Condition met
-            }
-
-            if ((microtime(true) - $start) * 1000 > $timeoutMs) {
-                $this->fail("Timeout waiting for condition");
-            }
-
-            usleep($intervalMs * 1000);
-        }
-    }
-
-
 }
