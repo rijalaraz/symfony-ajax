@@ -43,39 +43,79 @@ class VideoWebTest extends WebTestCase
         // Send Ajax Form
         $client->xmlHttpRequest('POST', '/', $form->getPhpValues(), $form->getPhpFiles());
 
-        // Crée des fichiers uploadés (doivent exister dans le conteneur)
-        // $thumbnail = new UploadedFile($thumbnailPath, 'fanadiovana.jpg', 'image/jpeg', null, true);
-        // $videoFile = new UploadedFile($videoPath, 'rija.mp4', 'video/mp4', null, true);
-
-        // Send AJAX request
-        // $client->xmlHttpRequest('POST', '/', [
-        //     'video' => [
-        //         'title' => 'Test Video',
-        //         'description' => 'Description du vidéo',
-        //         'visibility' => '1',
-        //     ]
-        // ], [
-        //     'video' => [
-        //         'thumbnail' => $thumbnail,
-        //         'videoFile' => $videoFile
-        //     ]
-        // ]);
-
         // Vérifie que la requête AJAX a réussi
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(200);
 
-        // Récupère les fichiers reçus par Symfony
-        $receivedFiles = $client->getRequest()->files->all();
+        $this->assertResponseHeaderSame('content-type', 'application/json');
 
-        // Vérifie que Symfony les a bien reçus
-        $this->assertArrayHasKey('video', $receivedFiles);
-        $this->assertInstanceOf(UploadedFile::class, $receivedFiles['video']['thumbnail']);
-        $this->assertInstanceOf(UploadedFile::class, $receivedFiles['video']['videoFile']);
+        // Optionally assert JSON structure
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertArrayHasKey('code', $data);
 
-        // Vérifie le bon type MIME
-        // $this->assertSame('image/jpeg', $receivedFiles['video']['thumbnail']->getClientMimeType());
-        // $this->assertSame('video/mp4',  $receivedFiles['video']['videoFile']->getClientMimeType());
+        switch ($data['code']) {
+            case 'VIDEO_ADDED_SUCCESSFULLY':
+
+                // Vérifie que le poster de la vidéo est de la forme "/upload/thumbnails/69202d61abaa93.96087231.jpg"
+                $this->waitFor(function () use (&$crawler) {
+                    return $crawler->filter('#videos_list video')->count() > 0;
+                });
+
+                $poster = $crawler->filter('#videos_list video')->attr('poster');
+
+                $this->assertMatchesRegularExpression(
+                    '/\/upload\/thumbnails\/[A-Za-z0-9]+\.[0-9]+\.jpg$/',
+                    $poster
+                );
+
+                // Vérifie que la vidéo est de la forme "/upload/videos/69202d61acc1c6.83134536.mp4"
+                $this->waitFor(function () use (&$crawler) {
+                    return $crawler->filter('#videos_list video source')->count() > 0;
+                });
+
+                $src = $crawler->filter('#videos_list video source')->attr('src');
+
+                $this->assertMatchesRegularExpression(
+                    '/^\/upload\/videos\/[a-z0-9]+\.[0-9]+\.mp4$/',
+                    $src
+                );
+
+                // Récupère les fichiers reçus par Symfony
+                $receivedFiles = $client->getRequest()->files->all();
+
+                // Vérifie que Symfony les a bien reçus
+                $this->assertArrayHasKey('video', $receivedFiles);
+                $this->assertInstanceOf(UploadedFile::class, $receivedFiles['video']['thumbnail']);
+                $this->assertInstanceOf(UploadedFile::class, $receivedFiles['video']['videoFile']);
+
+                // Vérifie le bon type MIME
+                // $this->assertSame('image/jpeg', $receivedFiles['video']['thumbnail']->getClientMimeType());
+                // $this->assertSame('video/mp4',  $receivedFiles['video']['videoFile']->getClientMimeType());
+                break;
+            
+            default:
+                # code...
+                break;
+        }
 
     }
+
+    private function waitFor(callable $fn, int $timeoutMs = 3000, int $intervalMs = 100): void
+    {
+        $start = microtime(true);
+
+        while (true) {
+            if ($fn()) {
+                return; // Condition met
+            }
+
+            if ((microtime(true) - $start) * 1000 > $timeoutMs) {
+                $this->fail("Timeout waiting for condition");
+            }
+
+            usleep($intervalMs * 1000);
+        }
+    }
+
+
 }
