@@ -11,6 +11,8 @@ use Symfony\Component\DomCrawler\Field\FileFormField;
 
 class VideoPantherTest extends PantherTestCase
 {
+    use VideoAssertionsTrait;
+
     public function testVideoPantherValidForm(): void
     {
         // Lance Chrome (Panther WebDriver)
@@ -56,23 +58,11 @@ class VideoPantherTest extends PantherTestCase
         // Soumet le formulaire
         $client->submit($form);
 
-        // Vérifie que le poster de la vidéo est de la forme "/upload/thumbnails/69202d61abaa93.96087231.jpg"
-        $client->waitFor('#videos_list video');
-        $poster = $client->getCrawler()->filter('#videos_list video')->attr('poster');
+        // Assert at least 2 videos exist
+        $this->assertVideosExist(2);
 
-        $this->assertMatchesRegularExpression(
-            '/\/upload\/thumbnails\/[A-Za-z0-9]+\.[0-9]+\.jpg$/',
-            $poster
-        );
-
-        // Vérifie que la vidéo est de la forme "/upload/videos/69202d61acc1c6.83134536.mp4"
-        $client->waitFor('#videos_list video source');
-        $src = $client->getCrawler()->filter('#videos_list video source')->attr('src');
-
-        $this->assertMatchesRegularExpression(
-            '/\/upload\/videos\/[A-Za-z0-9]+\.[0-9]+\.mp4$/',
-            $src
-        );
+        // Assert all video sources end with .mp4
+        $this->assertVideoSourcesMatch('/\/upload\/videos\/[A-Za-z0-9]+\.[0-9]+\.mp4$/', '/\/upload\/thumbnails\/[A-Za-z0-9]+\.[0-9]+\.jpg$/');
 
     }
 }
