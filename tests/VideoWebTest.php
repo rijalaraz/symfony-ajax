@@ -57,7 +57,7 @@ class VideoWebTest extends WebTestCase
             case 'VIDEO_ADDED_SUCCESSFULLY':
 
                 // Vérifie que le poster de la vidéo est de la forme "/upload/thumbnails/69202d61abaa93.96087231.jpg"
-                $this->waitFor(function () use (&$crawler) {
+                $this->waitFor(function () use (&$crawler, $client) {
                     return $crawler->filter('#videos_list video')->count() > 0;
                 });
 
@@ -69,7 +69,7 @@ class VideoWebTest extends WebTestCase
                 );
 
                 // Vérifie que la vidéo est de la forme "/upload/videos/69202d61acc1c6.83134536.mp4"
-                $this->waitFor(function () use (&$crawler) {
+                $this->waitFor(function () use (&$crawler, $client) {
                     return $crawler->filter('#videos_list video source')->count() > 0;
                 });
 
