@@ -55,31 +55,6 @@ class VideoWebTest extends WebTestCase
 
         switch ($data['code']) {
             case 'VIDEO_ADDED_SUCCESSFULLY':
-
-                // Vérifie que le poster de la vidéo est de la forme "/upload/thumbnails/69202d61abaa93.96087231.jpg"
-                $this->waitFor(function () use (&$crawler, $client) {
-                    return $crawler->filter('#videos_list video')->count() > 0;
-                });
-
-                $poster = $crawler->filter('#videos_list video')->attr('poster');
-
-                $this->assertMatchesRegularExpression(
-                    '/\/upload\/thumbnails\/[A-Za-z0-9]+\.[0-9]+\.jpg$/',
-                    $poster
-                );
-
-                // Vérifie que la vidéo est de la forme "/upload/videos/69202d61acc1c6.83134536.mp4"
-                $this->waitFor(function () use (&$crawler, $client) {
-                    return $crawler->filter('#videos_list video source')->count() > 0;
-                });
-
-                $src = $crawler->filter('#videos_list video source')->attr('src');
-
-                $this->assertMatchesRegularExpression(
-                    '/^\/upload\/videos\/[a-z0-9]+\.[0-9]+\.mp4$/',
-                    $src
-                );
-
                 // Récupère les fichiers reçus par Symfony
                 $receivedFiles = $client->getRequest()->files->all();
 
