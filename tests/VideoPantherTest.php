@@ -2,10 +2,6 @@
 
 namespace App\Tests;
 
-use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverExpectedCondition;
-use Facebook\WebDriver\WebDriverWait;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Panther\PantherTestCase;
 use Symfony\Component\DomCrawler\Field\FileFormField;
 
