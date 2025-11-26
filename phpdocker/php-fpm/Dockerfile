@@ -11,7 +11,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /tmp/* /var/tmp/* /usr/share/doc/*
 
-# Dépendances Chrome
+# Chrome dependencies
 RUN apt-get update && apt-get install -y \
     wget gnupg unzip ca-certificates \
     libglib2.0-0 \
@@ -39,20 +39,21 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Installer Chrome stable
+# Install Chrome stable
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-linux.gpg \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
        > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update && apt-get install -y google-chrome-stable
+    && apt-get update \
+    && apt-get install -y --no-install-recommends google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
 
-# Installer ChromeDriver correspondant
-# Install matching ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | sed -E 's/Google Chrome ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+).*/\1/') && \
-    MAJOR=$(echo $CHROME_VERSION | cut -d. -f1) && \
-    DRIVER_VERSION=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${MAJOR}") && \
-    wget -O /tmp/chromedriver.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${DRIVER_VERSION}/linux64/chromedriver-linux64.zip" && \
-    unzip /tmp/chromedriver.zip -d /tmp/chromedriver && \
-    mv /tmp/chromedriver/chromedriver-linux64/chromedriver /usr/bin/chromedriver && \
-    chmod +x /usr/bin/chromedriver && \
-    rm -rf /tmp/chromedriver.zip /tmp/chromedriver
-
+# Install matching ChromeDriver using new Chrome for Testing API
+RUN set -eux; \
+    CHROME_VERSION=$(google-chrome --version | sed -E 's/Google Chrome ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+).*/\1/'); \
+    MAJOR=$(echo $CHROME_VERSION | cut -d. -f1); \
+    DRIVER_VERSION=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${MAJOR}"); \
+    wget -q "https://storage.googleapis.com/chrome-for-testing-public/${DRIVER_VERSION}/linux64/chromedriver-linux64.zip" -O /tmp/chromedriver.zip; \
+    unzip /tmp/chromedriver.zip -d /tmp; \
+    mv /tmp/chromedriver-linux64/chromedriver /usr/bin/chromedriver; \
+    chmod +x /usr/bin/chromedriver; \
+    rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
