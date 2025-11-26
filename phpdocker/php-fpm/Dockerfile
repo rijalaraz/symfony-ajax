@@ -46,14 +46,13 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearm
     && apt-get update && apt-get install -y google-chrome-stable
 
 # Installer ChromeDriver correspondant
-RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\d+' | head -1) && \
-    DRIVER_VERSION=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$CHROME_VERSION") && \
+# Install matching ChromeDriver
+RUN CHROME_VERSION=$(google-chrome --version | sed -E 's/Google Chrome ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+).*/\1/') && \
+    MAJOR=$(echo $CHROME_VERSION | cut -d. -f1) && \
+    DRIVER_VERSION=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${MAJOR}") && \
     wget -O /tmp/chromedriver.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${DRIVER_VERSION}/linux64/chromedriver-linux64.zip" && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/bin/chromedriver && \
+    unzip /tmp/chromedriver.zip -d /tmp/chromedriver && \
+    mv /tmp/chromedriver/chromedriver-linux64/chromedriver /usr/bin/chromedriver && \
     chmod +x /usr/bin/chromedriver && \
-    rm -rf /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
+    rm -rf /tmp/chromedriver.zip /tmp/chromedriver
 
-# Create non-root user
-RUN useradd -m chrome && chown -R chrome:chrome /home/rija/www/formajax
-USER chrome

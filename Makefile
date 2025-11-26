@@ -41,7 +41,7 @@ test-chrome:
 	docker exec -it $(SERVER) phpdocker/php-fpm/test-chrome.sh
 
 phpunit:
-	docker exec -it $(SERVER) bash -c "php bin/phpunit --testdox --filter=VideoPantherTest"
+	docker exec -it $(SERVER) bash -c "php bin/phpunit --testdox --filter=testVideoPantherValidForm"
 
 composer-diagnose:
 	docker exec -it --user=1000 $(SERVER) bash -c "composer diagnose"
